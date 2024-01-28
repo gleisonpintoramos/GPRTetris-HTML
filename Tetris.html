@@ -209,7 +209,7 @@ aux = document.getElementById('img_bl4'); blocosMoveis.push(aux);
 // Carrega os recordes
 function CarregaRecordes(){
    // Converta o array em uma string JSON
-   const json = localStorage.getItem("GPRTetris_recordes");
+   const json = localStorage.getItem("GPRTetrisRecordes");
   // Salve o JSON no localStorage
   recordes =JSON.parse(json);
 }
@@ -221,7 +221,7 @@ function SalvaRecordes(){
 
 
    // Salve o JSON no localStorage
-  localStorage.setItem("GPRTetris_recordes", json);
+  localStorage.setItem("GPRTetrisRecordes", json);
 }
 
 // ATUALIZA A MALHA DE BLOCOS
@@ -508,7 +508,7 @@ btBaixo.addEventListener('click', () => {
    }  
 });
 
-CarregaRecordes();
+if (localStorage.getItem("GPRTetrisRecordes") === null) {SalvaRecordes()} else {CarregaRecordes()};
 AtualizaBlocos();
 SorteiaPeca(); // SORTEIA A PRIMEIRA PEÇA
 setInterval(Jogar, 500)

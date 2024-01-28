@@ -38,10 +38,17 @@
     width: 45%;
     text-align: left;
    }
+   #Recordes {
+         position: absolute;
+         top: 0px;
+         left: 0px;
+         width: 480px;
+         height: 854px;
+        }     
 </style>
 
 <body>  
-   <img id="btRecordes"  src="Imagens/recordes.png">  
+   <img id="Recordes"  src="Imagens/recordes.png">  
    <img  id="btFechar" onclick = "window.location.href = 'Index.html'"src="Imagens/bt_Fechar.png">
    <table id="tabela"> 
     <tr> <td id="nome">Nome1</td> <td>0000</td> <td>0000</td> </tr>
@@ -64,12 +71,18 @@
     // Carrega os recordes
     function CarregaRecordes(){
        // Converta o array em uma string JSON
-      const json = localStorage.getItem("GPRTetris_recordes");
+      const json = localStorage.getItem("GPRTetrisRecordes");
       // Salve o JSON no localStorage
       recordes =JSON.parse(json);
     }
     
-    CarregaRecordes();
+    document.body.style.zoom = window.innerHeight/854;
+     // INICIALIZA RECORDES
+    recordes[0] = ["none","none","none","none","none","none","none","none","none","none"];
+    recordes[1] = [0,0,0,0,0,0,0,0,0,0];
+    recordes[2] = [0,0,0,0,0,0,0,0,0,0];
+
+    if (localStorage.getItem("GPRTetrisRecordes") === null) {} else {CarregaRecordes()};
 
     // Atualiando a tabela
     for (let i = 0; i < 10; i++){
@@ -77,10 +90,6 @@
         tabela.rows[i].cells[1].innerHTML = recordes[1][i];
         tabela.rows[i].cells[2].innerHTML = recordes[2][i];
     }    
-    setInterval(Redimensiona,200);
-    function Redimensiona(){
-       document.body.style.zoom = window.innerHeight/854;
-    }   
 </script>
 
 </html>
