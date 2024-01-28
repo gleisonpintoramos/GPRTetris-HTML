@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPR TETRIS</title>
+
+</head>
+<style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #btFechar {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      top: 760px;
+      left: 210px;
+   }   
+   #tabela{
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: cornflowerblue;;
+    box-shadow: 0 0 15 cornflowerblue;
+    font-size: 30px;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    position: absolute;
+    top: 160px;
+    left: 80px;
+    height: 590px;
+    width: 380px;
+   }
+   #nome{
+    width: 45%;
+    text-align: left;
+   }
+</style>
+
+<body>  
+   <img id="btRecordes"  src="Imagens/recordes.png">  
+   <img  id="btFechar" onclick = "window.location.href = 'Index.html'"src="Imagens/bt_Fechar.png">
+   <table id="tabela"> 
+    <tr> <td id="nome">Nome1</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome2</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome3</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome4</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome5</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome6</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome7</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome8</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome9</td> <td>0000</td> <td>0000</td> </tr>
+    <tr> <td id="nome">Nome10</td> <td>0000</td> <td>0000</td> </tr>
+   </table>
+</body>
+
+<script>
+    var tabela = document.getElementById("tabela");
+    var recordes = [];
+
+    // Carrega os recordes
+    function CarregaRecordes(){
+       // Converta o array em uma string JSON
+      const json = localStorage.getItem("GPRTetris_recordes");
+      // Salve o JSON no localStorage
+      recordes =JSON.parse(json);
+    }
+    
+    CarregaRecordes();
+
+    // Atualiando a tabela
+    for (let i = 0; i < 10; i++){
+        tabela.rows[i].cells[0].innerHTML = recordes[0][i];
+        tabela.rows[i].cells[1].innerHTML = recordes[1][i];
+        tabela.rows[i].cells[2].innerHTML = recordes[2][i];
+    }    
+    setInterval(Redimensiona,200);
+    function Redimensiona(){
+       document.body.style.zoom = window.innerHeight/854;
+    }   
+</script>
+
+</html>

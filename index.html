@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPR TETRIS</title>
+
+</head>
+<style>
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #PaginaMenu {
+         height: 720px;
+         width: 404px;
+         position: absolute;
+         top: 0;
+         left: 0;
+        }
+
+    #btIniciar {
+         position: absolute;
+         top: 300px;
+         left: 50px;
+        }    
+
+    #btRecordes {
+         position: absolute;
+         top: 380px;
+         left: 50px;
+        }     
+</style>
+
+<body>
+    <img id="PaginaMenu" src="Imagens/FundoMenu.png">
+
+    <img  id="btIniciar"  onclick = "window.location.href = 'Tetris.html'" src="Imagens/bt_Iniciar.png">
+   
+    
+    <img id="btRecordes" onclick = "window.location.href = 'recordes.html'" src="Imagens/bt_Recordes.png">  
+</body>
+
+<script>
+    setInterval(Redimensiona,200);
+    function Redimensiona(){
+       document.body.style.zoom = window.innerHeight/720;
+    }   
+</script>
+
+</html>

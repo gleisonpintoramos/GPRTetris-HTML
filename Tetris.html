@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPR TETRIS</title>
+</head>
+<style>
+    html{
+      background-color: white;
+    }
+    body {
+      align-items: normal;
+      background-color: rgb(0, 0, 0);
+      margin: 0;
+      padding: 0;
+      width: 404px;
+      height: 720px;
+    }
+
+    #meucanvas {
+      border: 1px solid white;
+      background-color: black;
+      position: absolute;
+      top: 70px;
+      left: 10px;
+   }
+   #btEsquerda {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      top: 590px;
+      left: 10px;
+   }    
+
+   #btGirar {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      top: 575px;
+      left: 130px;
+   }  
+
+   #btBaixo {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      top: 645px;
+      left: 130px;
+   }   
+
+   #btDireita {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      top: 590px;
+      left: 210px;
+   }   
+
+   #btFechar {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      top: 10px;
+      left: 320px;
+   }   
+  
+    #img_bl1{
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      top: 100px;
+      left: 100px;
+   }   
+
+   #img_bl2{
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      top: 150px;
+      left: 100px;
+   }   
+
+   #img_bl3{
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      top: 200px;
+      left: 100px;
+   }  
+
+   #img_bl4{
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      top: 250px;
+      left: 100px;
+   }   
+
+   #fimdejogo{
+      position: absolute;
+      width: 240px;
+      height: 100px;
+      top: 250px;
+      left: 17px;
+      display: none;
+   }   
+
+   #Titulo{
+      position: absolute;
+      top: 10px;
+      left: 35px;
+      width: 200px;
+      height: 60px;
+   }   
+
+   #Placar{
+      position: absolute;
+      top: 140px;
+      left: 265px;
+      width: 139px;
+      height: 224px;
+   }   
+
+   #Pontos {
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: cornflowerblue;;
+      box-shadow: 0 0 15 cornflowerblue;
+      position: absolute;
+      text-align: center;
+      color:cornflowerblue;;
+      font-size: 40px;
+      margin:0;
+      top: 300px;
+      left: 295px;
+    }
+    #Filas {
+      -webkit-text-stroke-width: 1px;
+      -webkit-text-stroke-color: cornflowerblue;;
+      box-shadow: 0 0 15 cornflowerblue;
+      position: absolute;
+      text-align: center;
+      color:cornflowerblue;;
+      font-size: 40px;
+      margin:0;
+      top: 200px;
+      left: 295px;
+    }
+ </style>
+
+<body>
+   <canvas width="250" height="500" id="meucanvas"></canvas>
+
+   <img  id="btEsquerda" src="Imagens/bt_Esquerda.png">
+   <img  id="btDireita" src="Imagens/bt_Direita.png">
+   <img  id="btGirar" src="Imagens/bt_Girar.png">
+   <img  id="btBaixo" src="Imagens/bt_Baixo.png">
+   <img  id="btFechar" onclick = "window.location.href = 'Index.html'"src="Imagens/bt_Fechar.png">
+
+   <img  id="Titulo" src ="Imagens/Titulo.png">
+
+   <img  id="Placar" src ="Imagens/Placar.png">
+   <h1 id="Filas">0000</h1>
+   <h1 id="Pontos">0000</h1>
+
+   <img  id="img_bl1" src="Imagens/b1.png">
+   <img  id="img_bl2" src="Imagens/b1.png">
+   <img  id="img_bl3" src="Imagens/b1.png">
+   <img  id="img_bl4" src="Imagens/b1.png">
+
+   <img  id="fimdejogo" src="Imagens/fimdejogo.png">
+</body>
+
+<script>
+ // VARIÁVEIS GLOBAIS
+ const canvas = document.getElementById('meucanvas');
+ const ctx_canvas = canvas.getContext('2d');
+ const div_filas = document.getElementById('Filas'); // DIV que mostra o número de filas 
+ const div_pontos = document.getElementById('Pontos'); // Div que mostra os pontos
+ var div_fimdejogo = document.getElementById('fimdejogo');
+ var pontos = 0; // Variável que contém os pontos
+ var filas = 0; // Variável que contém as filas formadas
+ var malha = []; // Variável que contém a malha
+ var blocosMoveis = []; // Armazenas os elementos dos blocos
+ var blocos = []; // Armazena pgn dos blocos
+ var pxBl = [0, 1, 2, 3]; // Armazena a posição x dos blocos
+ var pyBl = [2, 2, 2, 2]; // Armazena a posição y dos blocos
+ var nomeUsuario; // Solicita o nome do jogador
+ var peca_atual; // Número da peça atual
+ var status = "jogando" // Se true, fim de jogo.
+ var recordes = [];
+
+ document.body.style.zoom = window.innerHeight/720; // AJUSTANDO A RESOLUÇÃO
+ div_fimdejogo.style.display = "none"; // ESCONDENDO A TELA DE FIM DE JOGO
+ // INICIALIZA A MALHA
+   for (let i = 0; i < 24; i++) {malha[i] = [0,0,0,0,0,0,0,0,0,0];}
+ // INICIALIZA RECORDES
+   recordes[0] = ["none","none","none","none","none","none","none","none","none","none"];
+   recordes[1] = [0,0,0,0,0,0,0,0,0,0];
+   recordes[2] = [0,0,0,0,0,0,0,0,0,0];
+
+// ARMAZENANDO OS BLOCOS MOVEIS EM UM ARRAY 
+var  aux = document.getElementById('img_bl1'); blocosMoveis.push(aux);
+aux = document.getElementById('img_bl2'); blocosMoveis.push(aux);
+aux = document.getElementById('img_bl3'); blocosMoveis.push(aux);
+aux = document.getElementById('img_bl4'); blocosMoveis.push(aux);
+
+// Carrega os recordes
+function CarregaRecordes(){
+   // Converta o array em uma string JSON
+   const json = localStorage.getItem("GPRTetris_recordes");
+  // Salve o JSON no localStorage
+  recordes =JSON.parse(json);
+}
+
+// Salva os recordes
+function SalvaRecordes(){
+   // Converta o array em uma string JSON
+    const json = JSON.stringify(recordes);
+
+
+   // Salve o JSON no localStorage
+  localStorage.setItem("GPRTetris_recordes", json);
+}
+
+// ATUALIZA A MALHA DE BLOCOS
+function DesenhaMalha(){
+   var aux;
+   for (let yi = 4; yi < 24; yi++){
+      for (let xi = 0; xi < 10; xi++) {
+         switch (malha[yi][xi]) {
+           case 0: aux = "imagens/b0.png"; break;
+           case 1: aux = "imagens/b1.png"; break;  
+           case 2: aux = "imagens/b2.png"; break;  
+           case 3: aux = "imagens/b3.png"; break;  
+           case 4: aux = "imagens/b4.png"; break;  
+           case 5: aux = "imagens/b5.png"; break;  
+           case 6: aux = "imagens/b6.png"; break;  
+           case 7: aux = "imagens/b6.png"; break; 
+         }
+         let img = new Image(); 
+         img.src = aux;
+         img.onload = ()=> {
+          ctx_canvas.drawImage(img, xi*25,(yi-4)*25,25,25);
+         }
+      }
+   }
+}
+DesenhaMalha();
+
+// ATUALIZA A POSIÇÃO DOS BLOCOS MOVEIS 
+function AtualizaBlocos(){
+   for (let i = 0; i < 4; i++){
+      if (pyBl[i] > 3) {
+         blocosMoveis[i].style.display = 'block';
+         blocosMoveis[i].style.left = pxBl[i]*25+11 + 'px';
+         blocosMoveis[i].style.top = pyBl[i]*25-30 + 'px';
+      } else blocosMoveis[i].style.display = 'none';
+   }
+}
+//============================================================================
+// VERIFICA SE OS BLOCOS PODEM IR PARA A ESQUERDA.
+function VerificaEsquerda(){
+   var teste = true;
+
+   for (let i = 0; i < 4; i++){ 
+      if (pxBl[i] == 0) teste = false;
+      else
+      if (malha[pyBl[i]][pxBl[i]-1] != 0) teste = false;
+   }
+   return teste;
+}
+
+// VERIFICA SE OS BLOCOS PODEM IR PARA A DIREITA.
+function VerificaDireita(){
+   var teste = true;
+
+   for (let i = 0; i < 4; i++){ 
+      if (pxBl[i] == 9) teste = false
+      else
+      if (malha[pyBl[i]][pxBl[i]+1] != 0) teste = false;
+      
+   }
+   return teste;
+}
+
+// VERIFICA SE OS BLOCOS PODEM DESCER
+function VerificaBaixo(){
+   var teste = true;
+
+   for (let i = 0; i < 4; i++){ 
+      if (pyBl[i] > 22) teste = false 
+      else
+      if (malha[pyBl[i]+1][pxBl[i]] != 0) teste = false;  
+   }
+   return teste;
+}
+
+// SORTEIA UMA NOVA PEÇA
+function SorteiaPeca(){
+   let n = 1 + Math.floor(Math.random()*7);
+
+   if (n == 1){
+      pxBl = [0, 1, 2, 3]; // XXXX
+      pyBl = [2, 2, 2, 2]; //
+   } else
+   if (n == 2){
+      pxBl = [1, 2, 1, 2]; // XX
+      pyBl = [2, 2, 3, 3]; // XX
+   }else
+   if (n == 3){
+      pxBl = [1, 2, 2, 3]; // XX
+      pyBl = [2, 2, 3, 3]; //  XX
+   }else
+   if (n == 4){
+      pxBl = [2, 3, 1, 2]; //  XX
+      pyBl = [2, 2, 3, 3]; // XX
+   }else
+   if (n == 5){
+      pxBl = [1, 2, 1, 1]; // XX
+      pyBl = [2, 2, 3, 4]; // X
+                           // X 
+   }else
+   if (n == 6){
+      pxBl = [1, 2, 2, 2]; // XX
+      pyBl = [2, 2, 3, 4]; //  X
+                           //  X
+   }else
+   if (n == 7){
+      pxBl = [1, 2, 2, 3]; // XXX
+      pyBl = [1, 1, 2, 1]; //  X
+   }
+   peca_atual = n;
+}
+
+// VERIFICA RECORDES
+function VerificaRecordes(){
+   let aux = -1;
+   let a = "";
+   
+   for (let i = 0; i < 10; i++){   
+      if (pontos >= recordes[1][9-i]) aux = 9-i;
+   }
+   if (aux >= 0){
+      nomeUsuario = prompt("Você bateu um nono recorde. Digite seu nome:");
+      
+      for (let i = 9; i > aux; i--){
+          recordes[0][i] = recordes[0][i-1]; 
+          recordes[1][i] = recordes[1][i-1];
+          recordes[2][i] = recordes[2][i-1];
+      }
+      recordes[0][aux] = nomeUsuario;
+      recordes[1][aux] = pontos;
+      recordes[2][aux] = filas;
+      
+      SalvaRecordes(); // SALVA OS RECORDES
+   }
+}
+
+// INCORPORA OS BLOCOS Á MALHA
+function IncorporaBlocos(){
+   for (let i = 0; i < 4; i++){
+     malha[pyBl[i]][pxBl[i]] = peca_atual;
+     if (pyBl[i] < 4) {status = "acabou";}
+   }
+   if (status == "acabou") {
+      div_fimdejogo.style.display = "block";
+      VerificaRecordes();
+   }
+   DesenhaMalha();
+}
+
+// VERIFICA SE ALGUMA LINHA COMPLETOU.
+function VerificaLinhas(){
+   let cont = 0;
+   let linhas = 0; // NUMEERO DE LINHAS COMPLESTAS
+   let var_pontos = [0, 10, 30, 60, 100]; // PONTUAÇÃO PELAS LINHAS COMPLETAS
+   let y = 23;
+  
+   while (y > 3) {
+      for (let i = 0; i < 10; ++i){
+        if (malha[y][i] != 0) {cont++};   
+      }
+      if (cont > 9){
+         for (let i = y; i > 3; i--){
+           malha[i] = malha[i-1];   
+         }
+         linhas += 1;
+         y = 23;
+         cont = 0;      
+      } else {    
+        cont = 0;
+        y -= 1;
+      }  
+   }
+   pontos = pontos + var_pontos[linhas]; // SOMANDO PONTOS
+   filas = filas + linhas;
+   
+   // ATUALIZANDO O PLACAR DOS PONTOS
+   let aux ="";
+   if (pontos < 10) {aux ="000"} else 
+   if (pontos < 100) {aux ="00"} else
+   if (pontos < 1000) {aux ="0"} else {aux = ""}
+  
+   div_pontos.innerHTML = aux + pontos; // ATUALIZANDO PONTOS   
+   
+   // ATUALIZANDO O PLACAR DAS FILAS
+   aux ="";
+   if (filas < 10) {aux ="000"} else 
+   if (filas < 100) {aux ="00"} else
+   if (filas < 1000) {aux ="0"} else {aux = ""}
+  
+   div_filas.innerHTML = aux + filas; // ATUALIZANDO FILAS
+}
+
+// INICIAR JOGO
+function Jogar(){
+   document.body.style.zoom = window.innerHeight/720; // AJUSTANDO O ZOOM
+   if (status == "jogando"){ 
+     if (VerificaBaixo()){
+        for (let i = 0; i < 4; i++){pyBl[i]++;}
+        AtualizaBlocos();     
+     } else
+     {
+        IncorporaBlocos();
+        for (let i = 0; i < 4; i++){pyBl[i] = 3;}
+        VerificaLinhas(); 
+        SorteiaPeca();
+        AtualizaBlocos();
+     } 
+   } 
+   DesenhaMalha();  
+}
+
+// ATRIBUINDO AÇÕES AO BOTÃO ESQUERDA
+var btEsquerda = document.getElementById('btEsquerda');
+btEsquerda.addEventListener('click', () => {
+   if (status == "jogando"){ 
+     if (VerificaEsquerda()){
+        for (let i = 0; i < 4; i++){ 
+           pxBl[i]--;
+           AtualizaBlocos();
+        }
+     }
+   }  
+});
+
+// ATRIBUINDO AÇÕES AO BOTÃO DIREITA
+var btDireita = document.getElementById('btDireita');
+btDireita.addEventListener('click', () => {
+   if (status == "jogando"){ 
+     if (VerificaDireita()){
+        for (let i = 0; i < 4; i++){ 
+           pxBl[i]++;}
+           AtualizaBlocos();
+     }
+   }
+});
+
+// ATRIBUINDO AÇÕES AO BOTÃO GIRAR
+var btGirar = document.getElementById('btGirar');
+btGirar.addEventListener('click', () => {
+   let ax, ay;
+   let aux;
+   let px = [0, 1, 2, 3]; // Armazena temporariamente a posição x dos blocos
+   let py = [2, 2, 2, 2]; // Armazena termporariamente a posição y dos blocos
+   let teste = true;
+   if (status == "jogando"){ 
+     for (let i = 0; i < 4; i++){ 
+        px[i] = pxBl[i];
+        py[i] = pyBl[i];
+     }   
+
+     aux = "";
+     for (let i = 0; i < 4; i++){ 
+        ax = px[i]-px[2];
+        ay = py[i]-py[2];   
+
+        px[i] = px[2]-ay;
+        py[i] = py[2]+ax;
+
+        if (px[i] < 0  || px[i] > 9 || py[i] > 23) {teste = false};
+     }
+     if (teste == true){
+        for (let i = 0; i < 4; i++){ 
+           pxBl[i] = px[i];
+           pyBl[i] = py[i];
+        }   
+     } 
+
+     AtualizaBlocos();
+   }  
+});
+
+// ATRIBUINDO AÇÕES AO BOTÃO BAIXO
+var btBaixo = document.getElementById('btBaixo');
+btBaixo.addEventListener('click', () => {
+   if (status == "jogando"){ 
+     if (VerificaBaixo()){
+        for (let i = 0; i < 4; i++){pyBl[i]++;}
+        AtualizaBlocos();
+     } else{
+        IncorporaBlocos();
+        VerificaLinhas(); 
+        DesenhaMalha();
+     }
+   }  
+});
+
+CarregaRecordes();
+AtualizaBlocos();
+SorteiaPeca(); // SORTEIA A PRIMEIRA PEÇA
+setInterval(Jogar, 500)
+</script>
+
+</html>
